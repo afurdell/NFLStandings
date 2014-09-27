@@ -109,7 +109,7 @@ public class Team implements Comparable {
         return WinRecord.combinedWinRecord(defeatedOpponentsWinRecords).winPercentage();
     }
 
-    private Double strengthOfSchedule() {
+    protected Double strengthOfSchedule() {
         Set <WinRecord> opponentsWinRecords = new HashSet<>();
         for (Team team : opponents()) {
             opponentsWinRecords.add(team.getTotalWinRecord());

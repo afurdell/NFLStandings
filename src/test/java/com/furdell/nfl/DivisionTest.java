@@ -279,4 +279,52 @@ public class DivisionTest {
         assertEquals("Strength of Victory: 0.0", team2.getMessage());
     }
 
+    @Test
+    public void divisionSortsMultiWayTieResolvedSixthByMultiWayStrengthOfScheduleComparison() {
+        Team team1 = new Team("team1",Conference.AFC, Region.EAST);
+        Team team2 = new Team("team2",Conference.AFC, Region.EAST);
+        Team team3 = new Team("team3",Conference.AFC, Region.EAST);
+        Team team4 = new Team("team4",Conference.AFC, Region.EAST);
+        Team bestTeam = new Team("bestTeam", Conference.NFC, Region.WEST);
+        Team secondBestTeam = new Team("secondBestTeam", Conference.NFC, Region.WEST);
+        Team thirdBestTeam = new Team("thirdBestTeam", Conference.NFC, Region.WEST);
+        Team worstTeam = new Team("worstTeam", Conference.NFC, Region.WEST);
+        Division division = new Division("test", Arrays.asList(team1,team2,team3,team4));
+        assertEquals(team1, division.get(0));
+        assertEquals(team2, division.get(1));
+        assertEquals(team3, division.get(2));
+        assertEquals(team4, division.get(3));
+
+        bestTeam.recordWin(secondBestTeam);
+        bestTeam.recordWin(thirdBestTeam);
+        bestTeam.recordWin(worstTeam);
+
+        secondBestTeam.recordWin(thirdBestTeam);
+        secondBestTeam.recordWin(worstTeam);
+        secondBestTeam.recordLoss(bestTeam);
+
+        thirdBestTeam.recordWin(worstTeam);
+        thirdBestTeam.recordLoss(bestTeam);
+        thirdBestTeam.recordLoss(secondBestTeam);
+
+        worstTeam.recordLoss(bestTeam);
+        worstTeam.recordLoss(secondBestTeam);
+        worstTeam.recordLoss(thirdBestTeam);
+
+        team1.recordLoss(worstTeam);
+        team2.recordLoss(thirdBestTeam);
+        team3.recordLoss(secondBestTeam);
+        team4.recordLoss(bestTeam);
+
+        division.sort();
+        assertEquals(team4.getName(), division.get(0).getName());
+        assertEquals(team3.getName(), division.get(1).getName());
+        assertEquals(team2.getName(), division.get(2).getName());
+        assertEquals(team1.getName(), division.get(3).getName());
+        assertEquals("Strength of Schedule: 1.0", team4.getMessage());
+        assertEquals("Strength of Schedule: 0.667", team3.getMessage());
+        assertEquals("Strength of Schedule: 0.333", team2.getMessage());
+        assertEquals("Strength of Schedule: 0.0", team1.getMessage());
+    }
+
 }
