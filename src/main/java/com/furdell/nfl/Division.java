@@ -91,6 +91,20 @@ public class Division extends ArrayList<Team> {
         if (ties == 0) {
             return tiedRankedTeams;
         } else if (ties == 1) {
+            if (tiedRankedTeams[0].getTeam().compareTo(tiedRankedTeams[1].getTeam()) < 0) {
+                swap(tiedRankedTeams, 0, 1);
+            }
+        } else if (ties > 1) {
+            for (RankedTeam tiedRankedTeam : tiedRankedTeams) {
+                Double rankValue = tiedRankedTeam.getTeam().strengthOfVictory();
+                tiedRankedTeam.setRankedValue(rankValue, "Strength of Victory");
+            }
+        }
+        Arrays.sort(tiedRankedTeams);
+        ties = calculateTies(tiedRankedTeams);
+        if (ties == 0) {
+            return tiedRankedTeams;
+        } else if (ties == 1) {
             if (tiedRankedTeams[0].getTeam().compareTo(tiedRankedTeams[1].getTeam()) > 0) {
                 swap(tiedRankedTeams, 0, 1);
             }
@@ -103,7 +117,8 @@ public class Division extends ArrayList<Team> {
     }
 
     private void assignRanksByCommonGames(RankedTeam[] rankedTeams) {
-        Set<Team> commonTeams = rankedTeams[0].getTeam().opponents();
+        Set<Team> commonTeams = new HashSet<>();
+        commonTeams.addAll(rankedTeams[0].getTeam().opponents());
         for (int i = 1; i < rankedTeams.length; i++) {
             commonTeams.retainAll(rankedTeams[i].getTeam().opponents());
         }

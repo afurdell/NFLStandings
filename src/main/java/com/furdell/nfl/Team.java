@@ -99,7 +99,7 @@ public class Team implements Comparable {
         return WinRecord.combinedWinRecord(winRecords).winPercentage();
     }
 
-    private Double strengthOfVictory() {
+    protected Double strengthOfVictory() {
         Set<WinRecord> defeatedOpponentsWinRecords = new HashSet<>();
         for (Team team : winRecordsByTeam.keySet()) {
             if (winRecordsByTeam.get(team).getWins() > 0) {
@@ -156,8 +156,6 @@ public class Team implements Comparable {
         Double rankValue = winPercentage();
         Double otherRankValue = other.winPercentage();
         int comparison = rankValue.compareTo(otherRankValue);
-//        setMessage("Overall Win-Loss-Draw Percentage: " + rankValue);
-//        other.setMessage("Overall Win-Loss-Draw Percentage: " + otherRankValue);
         if (comparison == 0) {
             rankValue = winPercentage(other);
             otherRankValue = other.winPercentage(this);
