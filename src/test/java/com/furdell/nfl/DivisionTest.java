@@ -1,5 +1,6 @@
 package com.furdell.nfl;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -9,18 +10,35 @@ import static org.junit.Assert.assertTrue;
 
 public class DivisionTest {
 
-    @Test
-    public void divisionSortsTeamsByWinLossDrawPercentage() {
-        Team team1 = new Team("team1", Conference.AFC, Region.EAST);
-        Team team2 = new Team("team2",Conference.AFC, Region.EAST);
-        Team team3 = new Team("team3",Conference.AFC, Region.EAST);
-        Team team4 = new Team("team4",Conference.AFC, Region.EAST);
-        Team otherTeam = new Team("otherteam", Conference.AFC, Region.NORTH);
-        Division division = new Division("test", Arrays.asList(team1,team2,team3,team4));
+    private Team team1;
+    private Team team2;
+    private Team team3;
+    private Team team4;
+    private Team sameConferenceTeam;
+    private Team otherConferenceTeam;
+    private Division division;
+
+    @Before
+    public void before() {
+        team1 = new Team("team1", Conference.AFC, Region.EAST);
+        team2 = new Team("team2",Conference.AFC, Region.EAST);
+        team3 = new Team("team3",Conference.AFC, Region.EAST);
+        team4 = new Team("team4",Conference.AFC, Region.EAST);
+        division = new Division("test", Arrays.asList(team1,team2,team3,team4));
+        sameConferenceTeam = new Team("sameConferenceTeam", Conference.AFC, Region.WEST);
+        otherConferenceTeam = new Team("otherConference", Conference.NFC, Region.NORTH);
         assertEquals(team1, division.get(0));
         assertEquals(team2, division.get(1));
         assertEquals(team3, division.get(2));
         assertEquals(team4, division.get(3));
+        for (Team team : division) {
+            assertTrue(team.getMessage().isEmpty());
+        }
+    }
+
+    @Test
+    public void divisionSortsTeamsByWinLossDrawPercentage() {
+        Team otherTeam = new Team("otherteam", Conference.AFC, Region.NORTH);
         for (int i = 0; i < 4; i++) {
             team1.recordLoss(otherTeam);
             team2.recordWin(otherTeam);
@@ -37,24 +55,14 @@ public class DivisionTest {
         assertEquals(team3.getName(), division.get(1).getName());
         assertEquals(team4.getName(), division.get(2).getName());
         assertEquals(team1.getName(), division.get(3).getName());
-        assertTrue(team2.getMessage().isEmpty());
-        assertTrue(team3.getMessage().isEmpty());
-        assertTrue(team4.getMessage().isEmpty());
-        assertTrue(team1.getMessage().isEmpty());
+        for (Team team : division) {
+            assertTrue(team.getMessage().isEmpty());
+        }
     }
 
     @Test
     public void divisionSortsMultiWayTieResolvedByMultiWayHeadToHeadComparison() {
-        Team team1 = new Team("team1",Conference.AFC, Region.EAST); //(2-2; 0-1)
-        Team team2 = new Team("team2",Conference.AFC, Region.EAST); // (2-2; 1-2)
-        Team team3 = new Team("team3",Conference.AFC, Region.EAST); // (2-2; 2-0)
-        Team team4 = new Team("team4",Conference.AFC, Region.EAST); // (1-3)
         Team otherTeam = new Team("otherteam", Conference.NFC, Region.WEST);
-        Division division = new Division("test", Arrays.asList(team1,team2,team3,team4));
-        assertEquals(team1, division.get(0));
-        assertEquals(team2, division.get(1));
-        assertEquals(team3, division.get(2));
-        assertEquals(team4, division.get(3));
 
         team1.recordWin(team4);
         team1.recordWin(team4);
@@ -89,31 +97,20 @@ public class DivisionTest {
 
     @Test
     public void divisionSortsMultiWayTieResolvedSecondByMultiWayDivisionComparison() {
-        Team team1 = new Team("team1",Conference.AFC, Region.EAST); // (3-1; 0-0)
-        Team team2 = new Team("team2",Conference.AFC, Region.EAST); // (3-1; 2-1)
-        Team team3 = new Team("team3",Conference.AFC, Region.EAST); // (3-1; 1-0)
-        Team team4 = new Team("team4",Conference.AFC, Region.EAST); // (1-3)
-        Team otherTeam = new Team("otherteam", Conference.NFC, Region.WEST);
-        Division division = new Division("test", Arrays.asList(team1,team2,team3,team4));
-        assertEquals(team1, division.get(0));
-        assertEquals(team2, division.get(1));
-        assertEquals(team3, division.get(2));
-        assertEquals(team4, division.get(3));
-
-        team1.recordWin(otherTeam);
-        team1.recordWin(otherTeam);
-        team1.recordWin(otherTeam);
-        team1.recordLoss(otherTeam);
+        team1.recordWin(otherConferenceTeam);
+        team1.recordWin(otherConferenceTeam);
+        team1.recordWin(otherConferenceTeam);
+        team1.recordLoss(otherConferenceTeam);
 
         team2.recordWin(team4);
         team2.recordWin(team4);
-        team2.recordWin(otherTeam);
+        team2.recordWin(otherConferenceTeam);
         team2.recordLoss(team4);
 
         team3.recordWin(team4);
-        team3.recordWin(otherTeam);
-        team3.recordWin(otherTeam);
-        team3.recordLoss(otherTeam);
+        team3.recordWin(otherConferenceTeam);
+        team3.recordWin(otherConferenceTeam);
+        team3.recordLoss(otherConferenceTeam);
 
         team4.recordWin(team2);
         team4.recordLoss(team2);
@@ -133,20 +130,11 @@ public class DivisionTest {
 
     @Test
     public void divisionSortsMultiWayTieResolvedThirdByCommonGamesComparison() {
-        Team team1 = new Team("team1",Conference.AFC, Region.EAST); // (4-4; 2-2)
-        Team team2 = new Team("team2",Conference.AFC, Region.EAST); // (4-4; 3-1)
-        Team team3 = new Team("team3",Conference.AFC, Region.EAST); // (4-4; 1-3)
-        Team team4 = new Team("team4",Conference.AFC, Region.EAST); // (4-4; 4-0)
         Team otherTeam1 = new Team("otherteam1", Conference.NFC, Region.WEST);
         Team otherTeam2 = new Team("otherteam2", Conference.NFC, Region.WEST);
         Team otherTeam3 = new Team("otherteam3", Conference.NFC, Region.WEST);
         Team otherTeam4 = new Team("otherteam4", Conference.NFC, Region.WEST);
         Team commonTeam = new Team("commonTeam", Conference.NFC, Region.NORTH);
-        Division division = new Division("test", Arrays.asList(team1,team2,team3,team4));
-        assertEquals(team1, division.get(0));
-        assertEquals(team2, division.get(1));
-        assertEquals(team3, division.get(2));
-        assertEquals(team4, division.get(3));
 
         for (int i = 0; i < 4; i++) {
             team4.recordWin(commonTeam);
@@ -184,37 +172,25 @@ public class DivisionTest {
 
     @Test
     public void divisionSortsMultiWayTieResolvedFourthByMultiWayConferenceComparison() {
-        Team team1 = new Team("team1",Conference.AFC, Region.EAST); // (2-2; 2-1)
-        Team team2 = new Team("team2",Conference.AFC, Region.EAST); // (2-2; 0-1)
-        Team team3 = new Team("team3",Conference.AFC, Region.EAST); // (2-2; 2-0)
-        Team team4 = new Team("team4",Conference.AFC, Region.EAST); // (2-2; 1-2)
-        Team sameConference = new Team("sameConference", Conference.AFC, Region.WEST);
-        Team otherConference = new Team("otherConference", Conference.NFC, Region.NORTH);
-        Division division = new Division("test", Arrays.asList(team1,team2,team3,team4));
-        assertEquals(team1, division.get(0));
-        assertEquals(team2, division.get(1));
-        assertEquals(team3, division.get(2));
-        assertEquals(team4, division.get(3));
+        team1.recordWin(sameConferenceTeam);
+        team1.recordWin(sameConferenceTeam);
+        team1.recordLoss(sameConferenceTeam);
+        team1.recordLoss(otherConferenceTeam);
 
-        team1.recordWin(sameConference);
-        team1.recordWin(sameConference);
-        team1.recordLoss(sameConference);
-        team1.recordLoss(otherConference);
+        team2.recordWin(otherConferenceTeam);
+        team2.recordWin(otherConferenceTeam);
+        team2.recordLoss(otherConferenceTeam);
+        team2.recordLoss(sameConferenceTeam);
 
-        team2.recordWin(otherConference);
-        team2.recordWin(otherConference);
-        team2.recordLoss(otherConference);
-        team2.recordLoss(sameConference);
+        team3.recordWin(sameConferenceTeam);
+        team3.recordWin(sameConferenceTeam);
+        team3.recordLoss(otherConferenceTeam);
+        team3.recordLoss(otherConferenceTeam);
 
-        team3.recordWin(sameConference);
-        team3.recordWin(sameConference);
-        team3.recordLoss(otherConference);
-        team3.recordLoss(otherConference);
-
-        team4.recordWin(sameConference);
-        team4.recordWin(otherConference);
-        team4.recordLoss(sameConference);
-        team4.recordLoss(sameConference);
+        team4.recordWin(sameConferenceTeam);
+        team4.recordWin(otherConferenceTeam);
+        team4.recordLoss(sameConferenceTeam);
+        team4.recordLoss(sameConferenceTeam);
 
         division.sort();
         assertEquals(team3.getName(), division.get(0).getName());
@@ -229,21 +205,12 @@ public class DivisionTest {
 
     @Test
     public void divisionSortsMultiWayTieResolvedFifthByMultiWayStrengthOfVictoryComparison() {
-        Team team1 = new Team("team1",Conference.AFC, Region.EAST);
-        Team team2 = new Team("team2",Conference.AFC, Region.EAST);
-        Team team3 = new Team("team3",Conference.AFC, Region.EAST);
-        Team team4 = new Team("team4",Conference.AFC, Region.EAST);
         Team goodTeam1 = new Team("goodTeam1", Conference.NFC, Region.WEST);
         Team goodTeam2 = new Team("goodTeam2", Conference.NFC, Region.WEST);
         Team goodTeam3 = new Team("goodTeam3", Conference.NFC, Region.WEST);
         Team badTeam1 = new Team("badTeam1", Conference.NFC, Region.NORTH);
         Team badTeam2 = new Team("badTeam2", Conference.NFC, Region.NORTH);
         Team badTeam3 = new Team("badTeam3", Conference.NFC, Region.NORTH);
-        Division division = new Division("test", Arrays.asList(team1,team2,team3,team4));
-        assertEquals(team1, division.get(0));
-        assertEquals(team2, division.get(1));
-        assertEquals(team3, division.get(2));
-        assertEquals(team4, division.get(3));
 
         goodTeam1.recordWin(badTeam1);
         goodTeam2.recordWin(badTeam2);
@@ -281,19 +248,10 @@ public class DivisionTest {
 
     @Test
     public void divisionSortsMultiWayTieResolvedSixthByMultiWayStrengthOfScheduleComparison() {
-        Team team1 = new Team("team1",Conference.AFC, Region.EAST);
-        Team team2 = new Team("team2",Conference.AFC, Region.EAST);
-        Team team3 = new Team("team3",Conference.AFC, Region.EAST);
-        Team team4 = new Team("team4",Conference.AFC, Region.EAST);
         Team bestTeam = new Team("bestTeam", Conference.NFC, Region.WEST);
         Team secondBestTeam = new Team("secondBestTeam", Conference.NFC, Region.WEST);
         Team thirdBestTeam = new Team("thirdBestTeam", Conference.NFC, Region.WEST);
         Team worstTeam = new Team("worstTeam", Conference.NFC, Region.WEST);
-        Division division = new Division("test", Arrays.asList(team1,team2,team3,team4));
-        assertEquals(team1, division.get(0));
-        assertEquals(team2, division.get(1));
-        assertEquals(team3, division.get(2));
-        assertEquals(team4, division.get(3));
 
         bestTeam.recordWin(secondBestTeam);
         bestTeam.recordWin(thirdBestTeam);
@@ -327,4 +285,20 @@ public class DivisionTest {
         assertEquals("Strength of Schedule: 0.0", team1.getMessage());
     }
 
+    @Test
+    public void onceUnbrokenMultiwayTieIsEstablishedNoFurtherSortingIsAttempted() {
+        team1.recordWin(team2);
+        team2.recordLoss(team1);
+        team2.recordWin(team3);
+        team3.recordLoss(team2);
+        team3.recordWin(team4);
+        team4.recordLoss(team3);
+        team4.recordWin(team1);
+        team1.recordLoss(team4);
+
+        division.sort();
+        for (Team team : division) {
+            assertEquals("unresolved multiway tie", team.getMessage());
+        }
+    }
 }

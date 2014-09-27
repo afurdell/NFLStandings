@@ -3,6 +3,7 @@ package com.furdell.nfl;
 import java.util.*;
 
 public class Division extends ArrayList<Team> {
+    private static final String UNRESOLVED_TIE_MESSAGE = "unresolved multiway tie";
     private final String name;
 
     public Division(String name, List<Team> teams) {
@@ -22,14 +23,16 @@ public class Division extends ArrayList<Team> {
         }
         Arrays.sort(rankedTeams);
         for (int i = 0; i < size()-1; i++) {
-            int ties = calculateTies(Arrays.copyOfRange(rankedTeams, i, rankedTeams.length));
-            if (ties == 1) {
-                if (rankedTeams[i].getTeam().compareTo(rankedTeams[i+1].getTeam()) < 0) {
-                    swap(rankedTeams, i, i+1);
+            if (!rankedTeams[i].getTeam().getMessage().equals(UNRESOLVED_TIE_MESSAGE)) {
+                int ties = calculateTies(Arrays.copyOfRange(rankedTeams, i, rankedTeams.length));
+                if (ties == 1) {
+                    if (rankedTeams[i].getTeam().compareTo(rankedTeams[i + 1].getTeam()) < 0) {
+                        swap(rankedTeams, i, i + 1);
+                    }
+                } else if (ties > 1) {
+                    RankedTeam[] resolvedTies = resolveTies(Arrays.copyOfRange(rankedTeams, i, i + ties + 1));
+                    System.arraycopy(resolvedTies, i, rankedTeams, i + i, resolvedTies.length - i);
                 }
-            } else if (ties > 1) {
-                RankedTeam[] resolvedTies = resolveTies(Arrays.copyOfRange(rankedTeams, i, i+ties+1));
-                System.arraycopy(resolvedTies, i, rankedTeams, i + i, resolvedTies.length - i);
             }
         }
         this.removeAll(this);
@@ -124,7 +127,7 @@ public class Division extends ArrayList<Team> {
             }
         } else if (ties > 1) {
             for (RankedTeam rankedTeam : tiedRankedTeams) {
-                rankedTeam.getTeam().setMessage("unresolved multiway tie");
+                rankedTeam.getTeam().setMessage(UNRESOLVED_TIE_MESSAGE);
             }
         }
         return tiedRankedTeams;
