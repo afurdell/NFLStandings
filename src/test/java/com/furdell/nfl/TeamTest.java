@@ -15,8 +15,8 @@ public class TeamTest {
         team2.recordLoss(team1);
         assertTrue(team1.winPercentage() > team2.winPercentage());
         assertEquals(-1, team2.compareTo(team1));
-        assertEquals("Overall Win-Loss-Draw Percentage: " + team1.winPercentage().toString(), team1.getMessage());
-        assertEquals("Overall Win-Loss-Draw Percentage: " + team2.winPercentage().toString(), team2.getMessage());
+        assertTrue(team1.getMessage().isEmpty());
+        assertTrue(team2.getMessage().isEmpty());
         assertEquals(1, team1.compareTo(team2));
     }
 

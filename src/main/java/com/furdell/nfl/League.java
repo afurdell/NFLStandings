@@ -101,7 +101,7 @@ public class League {
         System.out.println(division.getName());
         System.out.println("-------");
         for (Team team : division) {
-            System.out.println(team.getName() + "\t" + team.winRecord() + "\t(" + team.getMessage() + ")");
+            System.out.println(team.getName() + "\t" + team.winRecord() + "\t" + team.getMessage());
         }
     }
 

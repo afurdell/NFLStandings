@@ -3,13 +3,11 @@ package com.furdell.nfl;
 public class RankedTeam implements Comparable {
     private final Team team;
     private Double rankedValue;
+    private String rankDescription = "";
 
-    private String rankDescription;
-
-    public RankedTeam(Team team, Double rankedValue, String rankDescription) {
+    public RankedTeam(Team team, Double rankedValue) {
         this.team = team;
         this.rankedValue = rankedValue;
-        this.rankDescription = rankDescription;
     }
 
     public Team getTeam() {
@@ -33,8 +31,10 @@ public class RankedTeam implements Comparable {
     @Override
     public int compareTo(Object o) {
         RankedTeam other = (RankedTeam) o;
-        getTeam().setMessage(rankDescription + ": " + rankedValue);
-        other.getTeam().setMessage(other.rankDescription + ": " + other.rankedValue);
+        if (rankDescription.length() > 0) {
+            getTeam().setMessage(rankDescription + ": " + rankedValue);
+            other.getTeam().setMessage(other.rankDescription + ": " + other.rankedValue);
+        }
         return rankedValue.compareTo(other.rankedValue) * -1;
     }
 }

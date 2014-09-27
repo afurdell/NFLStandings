@@ -18,7 +18,7 @@ public class Division extends ArrayList<Team> {
         RankedTeam[] rankedTeams = new RankedTeam[size()];
         for (int i = 0; i < size(); i++) {
             Team team = get(i);
-            rankedTeams[i] = new RankedTeam(team, team.winPercentage(), "Win-Loss-Draw Percentage");
+            rankedTeams[i] = new RankedTeam(team, team.winPercentage());
         }
         Arrays.sort(rankedTeams);
         for (int i = 0; i < size()-1; i++) {

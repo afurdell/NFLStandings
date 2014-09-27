@@ -11,7 +11,7 @@ public class Team implements Comparable {
     private WinRecord divisionalWinRecord = new WinRecord();
     private WinRecord conferenceWinRecord = new WinRecord();
     private Map<Team, WinRecord> winRecordsByTeam = new HashMap<>();
-    private String message = "unranked";
+    private String message = "";
 
     public Team(String name, Conference conference, Region region) {
         this.name = name;
@@ -156,8 +156,8 @@ public class Team implements Comparable {
         Double rankValue = winPercentage();
         Double otherRankValue = other.winPercentage();
         int comparison = rankValue.compareTo(otherRankValue);
-        setMessage("Overall Win-Loss-Draw Percentage: " + rankValue);
-        other.setMessage("Overall Win-Loss-Draw Percentage: " + otherRankValue);
+//        setMessage("Overall Win-Loss-Draw Percentage: " + rankValue);
+//        other.setMessage("Overall Win-Loss-Draw Percentage: " + otherRankValue);
         if (comparison == 0) {
             rankValue = winPercentage(other);
             otherRankValue = other.winPercentage(this);

@@ -5,6 +5,7 @@ import org.junit.Test;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class DivisionTest {
 
@@ -36,10 +37,10 @@ public class DivisionTest {
         assertEquals(team3.getName(), division.get(1).getName());
         assertEquals(team4.getName(), division.get(2).getName());
         assertEquals(team1.getName(), division.get(3).getName());
-        assertEquals("Win-Loss-Draw Percentage: 1.0", team2.getMessage());
-        assertEquals("Win-Loss-Draw Percentage: 0.625", team3.getMessage());
-        assertEquals("Win-Loss-Draw Percentage: 0.5", team4.getMessage());
-        assertEquals("Win-Loss-Draw Percentage: 0.0", team1.getMessage());
+        assertTrue(team2.getMessage().isEmpty());
+        assertTrue(team3.getMessage().isEmpty());
+        assertTrue(team4.getMessage().isEmpty());
+        assertTrue(team1.getMessage().isEmpty());
     }
 
     @Test
@@ -83,7 +84,7 @@ public class DivisionTest {
         assertEquals("Head-To-Head Win-Loss-Draw Percentage Against Multiple Teams: 1.0", team3.getMessage());
         assertEquals("Head-To-Head Win-Loss-Draw Percentage Against Multiple Teams: 0.333", team2.getMessage());
         assertEquals("Head-To-Head Win-Loss-Draw Percentage Against Multiple Teams: 0.0", team1.getMessage());
-        assertEquals("Win-Loss-Draw Percentage: 0.25", team4.getMessage());
+        assertTrue(team4.getMessage().isEmpty());
     }
 
     @Test
@@ -127,7 +128,7 @@ public class DivisionTest {
         assertEquals("Divisional Win-Loss-Draw Percentage: 1.0", team3.getMessage());
         assertEquals("Divisional Win-Loss-Draw Percentage: 0.667", team2.getMessage());
         assertEquals("Divisional Win-Loss-Draw Percentage: 0.0", team1.getMessage());
-        assertEquals("Win-Loss-Draw Percentage: 0.25", team4.getMessage());
+        assertTrue(team4.getMessage().isEmpty());
     }
 
     @Test
