@@ -182,4 +182,49 @@ public class DivisionTest {
         assertEquals(team3.getName(), division.get(3).getName());
     }
 
+    @Test
+    public void divisionSortsMultiWayTieResolvedFourthByMultiWayConferenceComparison() {
+        Team team1 = new Team("team1",Conference.AFC, Region.EAST); // (2-2; 2-1)
+        Team team2 = new Team("team2",Conference.AFC, Region.EAST); // (2-2; 0-1)
+        Team team3 = new Team("team3",Conference.AFC, Region.EAST); // (2-2; 2-0)
+        Team team4 = new Team("team4",Conference.AFC, Region.EAST); // (2-2; 1-2)
+        Team sameConference = new Team("sameConference", Conference.AFC, Region.WEST);
+        Team otherConference = new Team("otherConference", Conference.NFC, Region.NORTH);
+        Division division = new Division("test", Arrays.asList(team1,team2,team3,team4));
+        assertEquals(team1, division.get(0));
+        assertEquals(team2, division.get(1));
+        assertEquals(team3, division.get(2));
+        assertEquals(team4, division.get(3));
+
+        team1.recordWin(sameConference);
+        team1.recordWin(sameConference);
+        team1.recordLoss(sameConference);
+        team1.recordLoss(otherConference);
+
+        team2.recordWin(otherConference);
+        team2.recordWin(otherConference);
+        team2.recordLoss(otherConference);
+        team2.recordLoss(sameConference);
+
+        team3.recordWin(sameConference);
+        team3.recordWin(sameConference);
+        team3.recordLoss(otherConference);
+        team3.recordLoss(otherConference);
+
+        team4.recordWin(sameConference);
+        team4.recordWin(otherConference);
+        team4.recordLoss(sameConference);
+        team4.recordLoss(sameConference);
+
+        division.sort();
+        assertEquals(team3.getName(), division.get(0).getName());
+        assertEquals(team1.getName(), division.get(1).getName());
+        assertEquals(team4.getName(), division.get(2).getName());
+        assertEquals(team2.getName(), division.get(3).getName());
+        assertEquals("Conference Win-Loss-Draw Percentage: 1.0", team3.getMessage());
+        assertEquals("Conference Win-Loss-Draw Percentage: 0.667", team1.getMessage());
+        assertEquals("Conference Win-Loss-Draw Percentage: 0.333", team4.getMessage());
+        assertEquals("Conference Win-Loss-Draw Percentage: 0.0", team2.getMessage());
+    }
+
 }

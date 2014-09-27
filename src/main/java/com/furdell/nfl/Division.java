@@ -40,8 +40,8 @@ public class Division extends ArrayList<Team> {
 
     private RankedTeam[] resolveTies(RankedTeam[] tiedRankedTeams) {
         Set<Team> tiedTeams = new HashSet<>();
-        for (RankedTeam tiedRankedTeam1 : tiedRankedTeams) {
-            tiedTeams.add(tiedRankedTeam1.getTeam());
+        for (RankedTeam tiedRankedTeam : tiedRankedTeams) {
+            tiedTeams.add(tiedRankedTeam.getTeam());
         }
         for (RankedTeam tiedRankedTeam : tiedRankedTeams) {
             Double rankValue = tiedRankedTeam.getTeam().winPercentage(tiedTeams);
@@ -71,6 +71,20 @@ public class Division extends ArrayList<Team> {
             }
         } else if (ties > 1) {
             assignRanksByCommonGames(Arrays.copyOfRange(tiedRankedTeams, 0, ties+1));
+        }
+        Arrays.sort(tiedRankedTeams);
+        ties = calculateTies(tiedRankedTeams);
+        if (ties == 0) {
+            return tiedRankedTeams;
+        } else if (ties == 1) {
+            if (tiedRankedTeams[0].getTeam().compareTo(tiedRankedTeams[1].getTeam()) < 0) {
+                swap(tiedRankedTeams, 0, 1);
+            }
+        } else if (ties > 1) {
+            for (RankedTeam tiedRankedTeam : tiedRankedTeams) {
+                Double rankValue = tiedRankedTeam.getTeam().conferenceWinPercentage();
+                tiedRankedTeam.setRankedValue(rankValue, "Conference Win-Loss-Draw Percentage");
+            }
         }
         Arrays.sort(tiedRankedTeams);
         ties = calculateTies(tiedRankedTeams);
