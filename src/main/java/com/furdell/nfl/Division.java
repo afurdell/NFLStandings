@@ -89,15 +89,14 @@ public class Division extends ArrayList<Team> {
     }
 
     private void assignRanksByCommonGames(RankedTeam[] rankedTeams) {
-        for (int i = 0; i < rankedTeams.length; i++) {
-            Set<Team> otherRankedTeamsOpponents = new HashSet<>();
-            for (int j = 0; j < rankedTeams.length; j++) {
-                if (i != j) {
-                    otherRankedTeamsOpponents.addAll(rankedTeams[j].getTeam().opponents());
-                }
-            }
-            Double rankedValue = rankedTeams[i].getTeam().winPercentage(otherRankedTeamsOpponents);
-            rankedTeams[i].setRankedValue(rankedValue, "Win-Loss-Draw Percentage, Games in Common With Multiple Opponents");
+        Set<Team> commonTeams = rankedTeams[0].getTeam().opponents();
+        for (int i = 1; i < rankedTeams.length; i++) {
+            commonTeams.retainAll(rankedTeams[i].getTeam().opponents());
+        }
+        for (RankedTeam rankedTeam: rankedTeams) {
+            Double rankedValue = rankedTeam.getTeam().winPercentage(commonTeams);
+            rankedTeam.setRankedValue(rankedValue, "Win-Loss-Draw Percentage, Games in Common With Multiple Opponents");
+
         }
     }
 
