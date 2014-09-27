@@ -1,7 +1,7 @@
 package com.furdell.nfl;
 
 import java.text.DecimalFormat;
-import java.util.List;
+import java.util.Set;
 
 public class WinRecord {
     private int wins = 0;
@@ -40,7 +40,7 @@ public class WinRecord {
         return draws;
     }
 
-    public static WinRecord combinedWinRecord(List<WinRecord> winRecords) {
+    public static WinRecord combinedWinRecord(Set<WinRecord> winRecords) {
         WinRecord combinedWinRecord = new WinRecord();
         for (WinRecord winRecord : winRecords) {
             combinedWinRecord.wins += winRecord.getWins();

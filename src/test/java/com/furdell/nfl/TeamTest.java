@@ -1,8 +1,5 @@
 package com.furdell.nfl;
 
-import com.furdell.nfl.Conference;
-import com.furdell.nfl.Region;
-import com.furdell.nfl.Team;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -103,6 +100,56 @@ public class TeamTest {
         assertEquals("Conference Win-Loss-Draw Percentage: " + team1.conferenceWinPercentage().toString(), team1.getMessage());
         assertEquals("Conference Win-Loss-Draw Percentage: " + team2.conferenceWinPercentage().toString(), team2.getMessage());
         assertEquals(-1, team1.compareTo(team2));
+    }
+
+    @Test
+    public void fifthTieBreakerIsStrengthOfVictory() {
+        Team team1 = new Team("team1",Conference.AFC, Region.EAST);
+        Team team2 = new Team("team2",Conference.AFC, Region.EAST);
+        Team goodTeam = new Team("goodTeam", Conference.NFC, Region.NORTH);
+        Team badTeam = new Team("badTeam", Conference.NFC, Region.NORTH);
+        for (int i = 0; i < 4; i++) {
+            goodTeam.recordWin(badTeam);
+            badTeam.recordLoss(goodTeam);
+        }
+        team1.recordWin(goodTeam);
+        team1.recordLoss(badTeam);
+        team2.recordWin(badTeam);
+        team2.recordLoss(goodTeam);
+        assertEquals(team1.winPercentage(), team2.winPercentage());
+        assertEquals(team1.winPercentage(team2), team2.winPercentage(team1));
+        assertEquals(team1.divisionalWinPercentage(), team2.divisionalWinPercentage());
+        assertEquals(team1.winPercentage(team2.opponents()), team2.winPercentage(team1.opponents()));
+        assertEquals(team1.conferenceWinPercentage(), team2.conferenceWinPercentage());
+        assertTrue(goodTeam.winPercentage() > badTeam.winPercentage());
+        assertEquals(1, team1.compareTo(team2));
+        assertEquals("Strength of Victory: " + goodTeam.winPercentage(), team1.getMessage());
+        assertEquals("Strength of Victory: " + badTeam.winPercentage(), team2.getMessage());
+        assertEquals(-1, team2.compareTo(team1));
+    }
+
+    @Test
+    public void sixthTieBreakerIsStrengthOfSchedule() {
+        Team team1 = new Team("team1",Conference.AFC, Region.EAST);
+        Team team2 = new Team("team2",Conference.AFC, Region.EAST);
+        Team goodTeam = new Team("goodTeam", Conference.NFC, Region.NORTH);
+        Team badTeam = new Team("badTeam", Conference.NFC, Region.NORTH);
+        for (int i = 0; i < 4; i++) {
+            goodTeam.recordWin(badTeam);
+            badTeam.recordLoss(goodTeam);
+        }
+        team1.recordLoss(goodTeam);
+        team2.recordLoss(badTeam);
+        assertEquals(team1.winPercentage(), team2.winPercentage());
+        assertEquals(team1.winPercentage(team2), team2.winPercentage(team1));
+        assertEquals(team1.divisionalWinPercentage(), team2.divisionalWinPercentage());
+        assertEquals(team1.winPercentage(team2.opponents()), team2.winPercentage(team1.opponents()));
+        assertEquals(team1.conferenceWinPercentage(), team2.conferenceWinPercentage());
+        assertTrue(goodTeam.winPercentage() > badTeam.winPercentage());
+        assertEquals(1, team1.compareTo(team2));
+        assertEquals("Strength of Schedule: " + goodTeam.winPercentage(), team1.getMessage());
+        assertEquals("Strength of Schedule: " + badTeam.winPercentage(), team2.getMessage());
+        assertEquals(-1, team2.compareTo(team1));
     }
 
     @Test

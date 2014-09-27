@@ -90,7 +90,7 @@ public class Division extends ArrayList<Team> {
 
     private void assignRanksByCommonGames(RankedTeam[] rankedTeams) {
         for (int i = 0; i < rankedTeams.length; i++) {
-            Set<Team> otherRankedTeamsOpponents = new HashSet<Team>();
+            Set<Team> otherRankedTeamsOpponents = new HashSet<>();
             for (int j = 0; j < rankedTeams.length; j++) {
                 if (i != j) {
                     otherRankedTeamsOpponents.addAll(rankedTeams[j].getTeam().opponents());

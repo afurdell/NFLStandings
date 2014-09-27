@@ -1,9 +1,5 @@
 package com.furdell.nfl;
 
-import com.furdell.nfl.Conference;
-import com.furdell.nfl.Division;
-import com.furdell.nfl.Region;
-import com.furdell.nfl.Team;
 import org.junit.Test;
 
 import java.util.Arrays;

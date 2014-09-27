@@ -90,7 +90,7 @@ public class Team implements Comparable {
     }
 
     protected Double winPercentage(Set<Team> opponents) {
-        List<WinRecord> winRecords = new ArrayList<>();
+        Set<WinRecord> winRecords = new HashSet<>();
         for (Team opponent : opponents) {
             if (winRecordsByTeam.containsKey(opponent)) {
                 winRecords.add(winRecordsByTeam.get(opponent));
@@ -99,7 +99,25 @@ public class Team implements Comparable {
         return WinRecord.combinedWinRecord(winRecords).winPercentage();
     }
 
-    protected Double divisionalWinPercentage() {
+    private Double strengthOfVictory() {
+        Set<WinRecord> defeatedOpponentsWinRecords = new HashSet<>();
+        for (Team team : winRecordsByTeam.keySet()) {
+            if (winRecordsByTeam.get(team).getWins() > 0) {
+                defeatedOpponentsWinRecords.add(team.getTotalWinRecord());
+            }
+        }
+        return WinRecord.combinedWinRecord(defeatedOpponentsWinRecords).winPercentage();
+    }
+
+    private Double strengthOfSchedule() {
+        Set <WinRecord> opponentsWinRecords = new HashSet<>();
+        for (Team team : opponents()) {
+            opponentsWinRecords.add(team.getTotalWinRecord());
+        }
+        return WinRecord.combinedWinRecord(opponentsWinRecords).winPercentage();
+    }
+
+    public Double divisionalWinPercentage() {
         return divisionalWinRecord.winPercentage();
     }
 
@@ -126,6 +144,8 @@ public class Team implements Comparable {
     public Region getRegion() {
         return region;
     }
+
+    private WinRecord getTotalWinRecord() { return  totalWinRecord; }
 
     @Override
     public int compareTo(Object o) {
@@ -165,6 +185,20 @@ public class Team implements Comparable {
             comparison = rankValue.compareTo(otherRankValue);
             setMessage("Conference Win-Loss-Draw Percentage: " + rankValue);
             other.setMessage("Conference Win-Loss-Draw Percentage: " + otherRankValue);
+        }
+        if (comparison == 0) {
+            rankValue = strengthOfVictory();
+            otherRankValue = other.strengthOfVictory();
+            comparison = rankValue.compareTo(otherRankValue);
+            setMessage("Strength of Victory: " + rankValue);
+            other.setMessage("Strength of Victory: " + otherRankValue);
+        }
+        if (comparison == 0) {
+            rankValue = strengthOfSchedule();
+            otherRankValue = other.strengthOfSchedule();
+            comparison = rankValue.compareTo(otherRankValue);
+            setMessage("Strength of Schedule: " + rankValue);
+            other.setMessage("Strength of Schedule: " + otherRankValue);
         }
         if (comparison == 0) {
             setMessage("unresolved tie");
