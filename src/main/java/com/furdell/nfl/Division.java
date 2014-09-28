@@ -54,10 +54,8 @@ public class Division extends ArrayList<Team> {
     }
 
     private List<RankedTeam> resolveTies(List<RankedTeam> tiedRankedTeams) {
-        List<RankedTeam> finalRankings = new ArrayList<>();
-        for (RankedTeam rankedTeam : tiedRankedTeams) {
-            finalRankings.add(null);
-        }
+        List<RankedTeam> finalRankings = new ArrayList<>(tiedRankedTeams);
+        Collections.fill(finalRankings, null);
         Set<Team> tiedTeams = new HashSet<>();
         for (RankedTeam tiedRankedTeam : tiedRankedTeams) {
             tiedTeams.add(tiedRankedTeam.getTeam());
@@ -67,16 +65,7 @@ public class Division extends ArrayList<Team> {
             tiedRankedTeam.setRankedValue(rankValue, "Head-To-Head Win-Loss-Draw Percentage Against Multiple Teams");
         }
         Collections.sort(tiedRankedTeams);
-        if (topTeamFound(tiedRankedTeams)) {
-            RankedTeam topTeam = tiedRankedTeams.get(0);
-            setFirstAvailablePosition(finalRankings, topTeam);
-            tiedRankedTeams.remove(topTeam);
-        }
-        if (bottomTeamFound(tiedRankedTeams)) {
-            RankedTeam bottomTeam = tiedRankedTeams.get(tiedRankedTeams.size()-1);
-            setLastAvailablePosition(finalRankings, bottomTeam);
-            tiedRankedTeams.remove(bottomTeam);
-        }
+        removeAndStoreUnTiedRankedTeams(tiedRankedTeams, finalRankings);
         int ties = calculateTies(tiedRankedTeams);
         if (ties == 0) {
             return assembledList(finalRankings, tiedRankedTeams);
@@ -91,16 +80,7 @@ public class Division extends ArrayList<Team> {
             }
         }
         Collections.sort(tiedRankedTeams);
-        if (topTeamFound(tiedRankedTeams)) {
-            RankedTeam topTeam = tiedRankedTeams.get(0);
-            setFirstAvailablePosition(finalRankings, topTeam);
-            tiedRankedTeams.remove(topTeam);
-        }
-        if (bottomTeamFound(tiedRankedTeams)) {
-            RankedTeam bottomTeam = tiedRankedTeams.get(tiedRankedTeams.size()-1);
-            setLastAvailablePosition(finalRankings, bottomTeam);
-            tiedRankedTeams.remove(bottomTeam);
-        }
+        removeAndStoreUnTiedRankedTeams(tiedRankedTeams, finalRankings);
         ties = calculateTies(tiedRankedTeams);
         if (ties == 0) {
             return assembledList(finalRankings, tiedRankedTeams);
@@ -112,16 +92,7 @@ public class Division extends ArrayList<Team> {
             assignRanksByCommonGames(tiedRankedTeams.subList(0, ties + 1));
         }
         Collections.sort(tiedRankedTeams);
-        if (topTeamFound(tiedRankedTeams)) {
-            RankedTeam topTeam = tiedRankedTeams.get(0);
-            setFirstAvailablePosition(finalRankings, topTeam);
-            tiedRankedTeams.remove(topTeam);
-        }
-        if (bottomTeamFound(tiedRankedTeams)) {
-            RankedTeam bottomTeam = tiedRankedTeams.get(tiedRankedTeams.size()-1);
-            setLastAvailablePosition(finalRankings, bottomTeam);
-            tiedRankedTeams.remove(bottomTeam);
-        }
+        removeAndStoreUnTiedRankedTeams(tiedRankedTeams, finalRankings);
         ties = calculateTies(tiedRankedTeams);
         if (ties == 0) {
             return assembledList(finalRankings, tiedRankedTeams);
@@ -136,16 +107,7 @@ public class Division extends ArrayList<Team> {
             }
         }
         Collections.sort(tiedRankedTeams);
-        if (topTeamFound(tiedRankedTeams)) {
-            RankedTeam topTeam = tiedRankedTeams.get(0);
-            setFirstAvailablePosition(finalRankings, topTeam);
-            tiedRankedTeams.remove(topTeam);
-        }
-        if (bottomTeamFound(tiedRankedTeams)) {
-            RankedTeam bottomTeam = tiedRankedTeams.get(tiedRankedTeams.size()-1);
-            setLastAvailablePosition(finalRankings, bottomTeam);
-            tiedRankedTeams.remove(bottomTeam);
-        }
+        removeAndStoreUnTiedRankedTeams(tiedRankedTeams, finalRankings);
         ties = calculateTies(tiedRankedTeams);
         if (ties == 0) {
             return assembledList(finalRankings, tiedRankedTeams);
@@ -160,16 +122,7 @@ public class Division extends ArrayList<Team> {
             }
         }
         Collections.sort(tiedRankedTeams);
-        if (topTeamFound(tiedRankedTeams)) {
-            RankedTeam topTeam = tiedRankedTeams.get(0);
-            setFirstAvailablePosition(finalRankings, topTeam);
-            tiedRankedTeams.remove(topTeam);
-        }
-        if (bottomTeamFound(tiedRankedTeams)) {
-            RankedTeam bottomTeam = tiedRankedTeams.get(tiedRankedTeams.size()-1);
-            setLastAvailablePosition(finalRankings, bottomTeam);
-            tiedRankedTeams.remove(bottomTeam);
-        }
+        removeAndStoreUnTiedRankedTeams(tiedRankedTeams, finalRankings);
         ties = calculateTies(tiedRankedTeams);
         if (ties == 0) {
             return assembledList(finalRankings, tiedRankedTeams);
@@ -184,16 +137,7 @@ public class Division extends ArrayList<Team> {
             }
         }
         Collections.sort(tiedRankedTeams);
-        if (topTeamFound(tiedRankedTeams)) {
-            RankedTeam topTeam = tiedRankedTeams.get(0);
-            setFirstAvailablePosition(finalRankings, topTeam);
-            tiedRankedTeams.remove(topTeam);
-        }
-        if (bottomTeamFound(tiedRankedTeams)) {
-            RankedTeam bottomTeam = tiedRankedTeams.get(tiedRankedTeams.size()-1);
-            setLastAvailablePosition(finalRankings, bottomTeam);
-            tiedRankedTeams.remove(bottomTeam);
-        }
+        removeAndStoreUnTiedRankedTeams(tiedRankedTeams, finalRankings);
         ties = calculateTies(tiedRankedTeams);
         if (ties == 0) {
             return assembledList(finalRankings, tiedRankedTeams);
@@ -207,6 +151,19 @@ public class Division extends ArrayList<Team> {
             }
         }
         return assembledList(finalRankings, tiedRankedTeams);
+    }
+
+    private void removeAndStoreUnTiedRankedTeams(List<RankedTeam> tiedRankedTeams, List<RankedTeam> finalRankings) {
+        while (topTeamFound(tiedRankedTeams)) {
+            RankedTeam topTeam = tiedRankedTeams.get(0);
+            setFirstAvailablePosition(finalRankings, topTeam);
+            tiedRankedTeams.remove(topTeam);
+        }
+        while (bottomTeamFound(tiedRankedTeams)) {
+            RankedTeam bottomTeam = tiedRankedTeams.get(tiedRankedTeams.size()-1);
+            setLastAvailablePosition(finalRankings, bottomTeam);
+            tiedRankedTeams.remove(bottomTeam);
+        }
     }
 
     private void setLastAvailablePosition(List<RankedTeam> rankedTeams, RankedTeam bottomTeam) {
@@ -230,23 +187,35 @@ public class Division extends ArrayList<Team> {
     private List<RankedTeam> assembledList(List<RankedTeam> rankedTeams, List<RankedTeam> teamsToInsert) {
         int j = 0;
         List<RankedTeam> assembledList = new ArrayList<>();
-        for (int i = 0; i < rankedTeams.size(); i++) {
-            if (rankedTeams.get(i) == null) {
+        for (RankedTeam rankedTeam : rankedTeams) {
+            if (rankedTeam == null) {
                 assembledList.add(teamsToInsert.get(j++));
             } else {
-                assembledList.add(rankedTeams.get(i));
+                assembledList.add(rankedTeam);
             }
         }
         return assembledList;
     }
 
-    private boolean bottomTeamFound(List<RankedTeam> rankedTeams) {
-        return (!rankedTeams.get(rankedTeams.size()-1).getRankedValue().equals(rankedTeams.get(rankedTeams.size()-2).getRankedValue()));
-
+    private boolean topTeamFound(List<RankedTeam> rankedTeams) {
+        if (rankedTeams.size() == 0) {
+            return false;
+        } else if (rankedTeams.size() == 1) {
+            return true;
+        } else {
+            return (!rankedTeams.get(0).getRankedValue().equals(rankedTeams.get(1).getRankedValue()));
+        }
     }
 
-    private boolean topTeamFound(List<RankedTeam> rankedTeams) {
-        return (!rankedTeams.get(0).getRankedValue().equals(rankedTeams.get(1).getRankedValue()));
+    private boolean bottomTeamFound(List<RankedTeam> rankedTeams) {
+        if (rankedTeams.size() == 0) {
+            return false;
+        } else if (rankedTeams.size() == 1) {
+            return true;
+        } else {
+            return (!rankedTeams.get(rankedTeams.size() - 1).getRankedValue().equals(rankedTeams.get(rankedTeams.size() - 2).getRankedValue()));
+        }
+
     }
 
     private void assignRanksByCommonGames(List<RankedTeam> rankedTeams) {
@@ -263,6 +232,9 @@ public class Division extends ArrayList<Team> {
     }
 
     private int calculateTies(List<RankedTeam> rankedTeams) {
+        if (rankedTeams.size() < 2) {
+            return 0;
+        }
         int ties = 0;
         Double valueToTie = rankedTeams.get(0).getRankedValue();
         String valueDescription = rankedTeams.get(0).getRankDescription();
