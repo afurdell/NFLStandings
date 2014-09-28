@@ -7,6 +7,7 @@ import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class DivisionTest {
 
@@ -33,6 +34,34 @@ public class DivisionTest {
         assertEquals(team4, division.get(3));
         for (Team team : division) {
             assertTrue(team.getMessage().isEmpty());
+        }
+    }
+
+    @Test
+    public void divisionTeamNumberConstraint() {
+        try {
+            division = new Division("test", Arrays.asList(team1, team2, team3));
+            fail();
+        } catch (RuntimeException re) {
+            assertEquals("Divisions must have exactly four teams!", re.getMessage());
+        }
+
+        try {
+            Team team5 = new Team("team5", Conference.AFC, Region.EAST);
+            division = new Division("test", Arrays.asList(team1, team2, team3, team4, team5));
+            fail();
+        } catch (RuntimeException re) {
+            assertEquals("Divisions must have exactly four teams!", re.getMessage());
+        }
+    }
+
+    @Test
+    public void allTeamsWithinDivisionHaveSameConferenceAndRegion() {
+        try {
+            division = new Division("test", Arrays.asList(team1, team2, team3, otherConferenceTeam));
+            fail();
+        } catch (RuntimeException re) {
+            assertEquals("All teams within a division must have the same conference and region!", re.getMessage());
         }
     }
 
@@ -300,5 +329,37 @@ public class DivisionTest {
         for (Team team : division) {
             assertEquals("unresolved multiway tie", team.getMessage());
         }
+    }
+
+    @Test
+    public void multiWayTieBreakersContinueSequentiallyUntilLessThanThreeTeamsAreTied() {
+        Team goodOtherConferenceTeam = new Team("goodOtherConferenceTeam", Conference.NFC, Region.NORTH);
+        goodOtherConferenceTeam.recordWin(otherConferenceTeam);
+        otherConferenceTeam.recordLoss(goodOtherConferenceTeam);
+
+        team1.recordWin(team2);
+        team2.recordLoss(team1);
+        team2.recordWin(team3);
+        team3.recordLoss(team2);
+        team3.recordWin(team4);
+        team4.recordLoss(team3);
+        team4.recordWin(team1);
+        team1.recordLoss(team4);
+
+        team4.recordWin(sameConferenceTeam);
+        team1.recordWin(goodOtherConferenceTeam);
+        team2.recordWin(otherConferenceTeam);
+        team3.recordWin(otherConferenceTeam);
+
+        division.sort();
+
+        assertEquals(team4.getName(), division.get(0).getName());
+        assertEquals(team1.getName(), division.get(1).getName());
+        assertEquals(team2.getName(), division.get(2).getName());
+        assertEquals(team3.getName(), division.get(3).getName());
+        assertEquals("Conference Win-Loss-Draw Percentage: 0.667", team4.getMessage());
+        assertEquals("Strength of Victory: 0.75", team1.getMessage());
+        assertEquals("Head-To-Head Win-Loss-Draw Percentage Against " + team3.getName() + ": 1.0", team2.getMessage());
+        assertEquals("Head-To-Head Win-Loss-Draw Percentage Against " + team2.getName() + ": 0.0", team3.getMessage());
     }
 }
