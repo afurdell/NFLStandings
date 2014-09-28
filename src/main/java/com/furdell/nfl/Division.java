@@ -30,130 +30,145 @@ public class Division extends ArrayList<Team> {
         for (Team team : this) {
             rankedTeams.add(new RankedTeam(team, team.winPercentage()));
         }
+        List<RankedTeam> finalRankings = new ArrayList<>(rankedTeams);
+        Collections.fill(finalRankings, null);
         Collections.sort(rankedTeams);
-        for (int i = 0; i < size()-1; i++) {
-            if (!rankedTeams.get(i).getTeam().getMessage().equals(UNRESOLVED_TIE_MESSAGE)) {
-                int ties = calculateTies(rankedTeams.subList(i, rankedTeams.size()));
-                if (ties == 1) {
-                    if (rankedTeams.get(i).getTeam().compareTo(rankedTeams.get(i+1).getTeam()) < 0) {
-                        Collections.swap(rankedTeams, i, i + 1);
-                    }
-                } else if (ties > 1) {
-                    List<RankedTeam> copy = new ArrayList<>(rankedTeams);
-                    List<RankedTeam> resolvedTies = new ArrayList<>(resolveTies(copy.subList(i, i + ties + 1)));
-                    for (int j = 0; j < resolvedTies.size(); j++) {
-                        rankedTeams.set(i+j, resolvedTies.get(j));
-                    }
-                }
+        removeAndStoreUnTiedRankedTeams(rankedTeams, finalRankings);
+        if (rankedTeams.size() == 0) {
+            rebuildDivision(finalRankings);
+            return;
+        } else if (rankedTeams.size() == 2) {
+            if (rankedTeams.get(0).getTeam().compareTo(rankedTeams.get(1).getTeam()) < 0) {
+                Collections.swap(rankedTeams, 0, 1);
+            }
+            storeTeams(finalRankings, rankedTeams);
+            rebuildDivision(finalRankings);
+            return;
+        } else if (rankedTeams.size() > 2) {
+            Set<Team> tiedTeams = new HashSet<>();
+            for (RankedTeam tiedRankedTeam : rankedTeams) {
+                tiedTeams.add(tiedRankedTeam.getTeam());
+            }
+            for (RankedTeam tiedRankedTeam : rankedTeams) {
+                Double rankValue = tiedRankedTeam.getTeam().winPercentage(tiedTeams);
+                tiedRankedTeam.setRankedValue(rankValue, "Head-To-Head Win-Loss-Draw Percentage Against Multiple Teams");
             }
         }
+        Collections.sort(rankedTeams);
+        removeAndStoreUnTiedRankedTeams(rankedTeams, finalRankings);
+        if (rankedTeams.size() == 0) {
+            rebuildDivision(finalRankings);
+            return;
+        } else if (rankedTeams.size() == 2) {
+            if (rankedTeams.get(0).getTeam().compareTo(rankedTeams.get(1).getTeam()) < 0) {
+                Collections.swap(rankedTeams, 0, 1);
+            }
+            storeTeams(finalRankings, rankedTeams);
+            rebuildDivision(finalRankings);
+            return;
+        } else if (rankedTeams.size() > 2) {
+            for (RankedTeam tiedRankedTeam : rankedTeams) {
+                Double rankValue = tiedRankedTeam.getTeam().divisionalWinPercentage();
+                tiedRankedTeam.setRankedValue(rankValue, "Divisional Win-Loss-Draw Percentage");
+            }
+        }
+        Collections.sort(rankedTeams);
+        removeAndStoreUnTiedRankedTeams(rankedTeams, finalRankings);
+        if (rankedTeams.size() == 0) {
+            rebuildDivision(finalRankings);
+            return;
+        } else if (rankedTeams.size() == 2) {
+            if (rankedTeams.get(0).getTeam().compareTo(rankedTeams.get(1).getTeam()) < 0) {
+                Collections.swap(rankedTeams, 0, 1);
+            }
+            storeTeams(finalRankings, rankedTeams);
+            rebuildDivision(finalRankings);
+            return;
+        } else if (rankedTeams.size() > 2) {
+            assignRanksByCommonGames(rankedTeams);
+        }
+        Collections.sort(rankedTeams);
+        removeAndStoreUnTiedRankedTeams(rankedTeams, finalRankings);
+        if (rankedTeams.size() == 0) {
+            rebuildDivision(finalRankings);
+            return;
+        } else if (rankedTeams.size() == 2) {
+            if (rankedTeams.get(0).getTeam().compareTo(rankedTeams.get(1).getTeam()) < 0) {
+                Collections.swap(rankedTeams, 0, 1);
+            }
+            storeTeams(finalRankings, rankedTeams);
+            rebuildDivision(finalRankings);
+            return;
+        } else if (rankedTeams.size() > 2) {
+            for (RankedTeam tiedRankedTeam : rankedTeams) {
+                Double rankValue = tiedRankedTeam.getTeam().conferenceWinPercentage();
+                tiedRankedTeam.setRankedValue(rankValue, "Conference Win-Loss-Draw Percentage");
+            }
+        }
+        Collections.sort(rankedTeams);
+        removeAndStoreUnTiedRankedTeams(rankedTeams, finalRankings);
+        if (rankedTeams.size() == 0) {
+            rebuildDivision(finalRankings);
+            return;
+        } else if (rankedTeams.size() == 2) {
+            if (rankedTeams.get(0).getTeam().compareTo(rankedTeams.get(1).getTeam()) < 0) {
+                Collections.swap(rankedTeams, 0, 1);
+            }
+            storeTeams(finalRankings, rankedTeams);
+            rebuildDivision(finalRankings);
+            return;
+        } else if (rankedTeams.size() > 2) {
+            for (RankedTeam tiedRankedTeam : rankedTeams) {
+                Double rankValue = tiedRankedTeam.getTeam().strengthOfVictory();
+                tiedRankedTeam.setRankedValue(rankValue, "Strength of Victory");
+            }
+        }
+        Collections.sort(rankedTeams);
+        removeAndStoreUnTiedRankedTeams(rankedTeams, finalRankings);
+        if (rankedTeams.size() == 0) {
+            rebuildDivision(finalRankings);
+            return;
+        } else if (rankedTeams.size() == 2) {
+            if (rankedTeams.get(0).getTeam().compareTo(rankedTeams.get(1).getTeam()) < 0) {
+                Collections.swap(rankedTeams, 0, 1);
+            }
+            storeTeams(finalRankings, rankedTeams);
+            rebuildDivision(finalRankings);
+            return;
+        } else if (rankedTeams.size() > 2) {
+            for (RankedTeam tiedRankedTeam : rankedTeams) {
+                Double rankValue = tiedRankedTeam.getTeam().strengthOfSchedule();
+                tiedRankedTeam.setRankedValue(rankValue, "Strength of Schedule");
+            }
+        }
+        Collections.sort(rankedTeams);
+        removeAndStoreUnTiedRankedTeams(rankedTeams, finalRankings);
+        if (rankedTeams.size() == 0) {
+            rebuildDivision(finalRankings);
+            return;
+        } else if (rankedTeams.size() == 2) {
+            if (rankedTeams.get(0).getTeam().compareTo(rankedTeams.get(1).getTeam()) < 0) {
+                Collections.swap(rankedTeams, 0, 1);
+            }
+            storeTeams(finalRankings, rankedTeams);
+            rebuildDivision(finalRankings);
+            return;
+        } else if (rankedTeams.size() > 2) {
+            for (RankedTeam rankedTeam : rankedTeams) {
+                rankedTeam.getTeam().setMessage(UNRESOLVED_TIE_MESSAGE);
+            }
+        }
+        rebuildDivision(rankedTeams);
+    }
+
+    private void rebuildDivision(List<RankedTeam> rankedTeams) {
         this.removeAll(this);
         for (int i = 0; i < rankedTeams.size(); i++) {
             this.add(i, rankedTeams.get(i).getTeam());
         }
     }
 
-    private List<RankedTeam> resolveTies(List<RankedTeam> tiedRankedTeams) {
-        List<RankedTeam> finalRankings = new ArrayList<>(tiedRankedTeams);
-        Collections.fill(finalRankings, null);
-        Set<Team> tiedTeams = new HashSet<>();
-        for (RankedTeam tiedRankedTeam : tiedRankedTeams) {
-            tiedTeams.add(tiedRankedTeam.getTeam());
-        }
-        for (RankedTeam tiedRankedTeam : tiedRankedTeams) {
-            Double rankValue = tiedRankedTeam.getTeam().winPercentage(tiedTeams);
-            tiedRankedTeam.setRankedValue(rankValue, "Head-To-Head Win-Loss-Draw Percentage Against Multiple Teams");
-        }
-        Collections.sort(tiedRankedTeams);
-        removeAndStoreUnTiedRankedTeams(tiedRankedTeams, finalRankings);
-        int ties = calculateTies(tiedRankedTeams);
-        if (ties == 0) {
-            return assembledList(finalRankings, tiedRankedTeams);
-        } else if (ties == 1) {
-            if (tiedRankedTeams.get(0).getTeam().compareTo(tiedRankedTeams.get(1).getTeam()) < 0) {
-                Collections.swap(tiedRankedTeams, 0, 1);
-            }
-        } else if (ties > 1) {
-            for (RankedTeam tiedRankedTeam : tiedRankedTeams) {
-                Double rankValue = tiedRankedTeam.getTeam().divisionalWinPercentage();
-                tiedRankedTeam.setRankedValue(rankValue, "Divisional Win-Loss-Draw Percentage");
-            }
-        }
-        Collections.sort(tiedRankedTeams);
-        removeAndStoreUnTiedRankedTeams(tiedRankedTeams, finalRankings);
-        ties = calculateTies(tiedRankedTeams);
-        if (ties == 0) {
-            return assembledList(finalRankings, tiedRankedTeams);
-        } else if (ties == 1) {
-            if (tiedRankedTeams.get(0).getTeam().compareTo(tiedRankedTeams.get(1).getTeam()) < 0) {
-                Collections.swap(tiedRankedTeams, 0, 1);
-            }
-        } else if (ties > 1) {
-            assignRanksByCommonGames(tiedRankedTeams.subList(0, ties + 1));
-        }
-        Collections.sort(tiedRankedTeams);
-        removeAndStoreUnTiedRankedTeams(tiedRankedTeams, finalRankings);
-        ties = calculateTies(tiedRankedTeams);
-        if (ties == 0) {
-            return assembledList(finalRankings, tiedRankedTeams);
-        } else if (ties == 1) {
-            if (tiedRankedTeams.get(0).getTeam().compareTo(tiedRankedTeams.get(1).getTeam()) < 0) {
-                Collections.swap(tiedRankedTeams, 0, 1);
-            }
-        } else if (ties > 1) {
-            for (RankedTeam tiedRankedTeam : tiedRankedTeams) {
-                Double rankValue = tiedRankedTeam.getTeam().conferenceWinPercentage();
-                tiedRankedTeam.setRankedValue(rankValue, "Conference Win-Loss-Draw Percentage");
-            }
-        }
-        Collections.sort(tiedRankedTeams);
-        removeAndStoreUnTiedRankedTeams(tiedRankedTeams, finalRankings);
-        ties = calculateTies(tiedRankedTeams);
-        if (ties == 0) {
-            return assembledList(finalRankings, tiedRankedTeams);
-        } else if (ties == 1) {
-            if (tiedRankedTeams.get(0).getTeam().compareTo(tiedRankedTeams.get(1).getTeam()) < 0) {
-                Collections.swap(tiedRankedTeams, 0, 1);
-            }
-        } else if (ties > 1) {
-            for (RankedTeam tiedRankedTeam : tiedRankedTeams) {
-                Double rankValue = tiedRankedTeam.getTeam().strengthOfVictory();
-                tiedRankedTeam.setRankedValue(rankValue, "Strength of Victory");
-            }
-        }
-        Collections.sort(tiedRankedTeams);
-        removeAndStoreUnTiedRankedTeams(tiedRankedTeams, finalRankings);
-        ties = calculateTies(tiedRankedTeams);
-        if (ties == 0) {
-            return assembledList(finalRankings, tiedRankedTeams);
-        } else if (ties == 1) {
-            if (tiedRankedTeams.get(0).getTeam().compareTo(tiedRankedTeams.get(1).getTeam()) < 0) {
-                Collections.swap(tiedRankedTeams, 0, 1);
-            }
-        } else if (ties > 1) {
-            for (RankedTeam tiedRankedTeam : tiedRankedTeams) {
-                Double rankValue = tiedRankedTeam.getTeam().strengthOfSchedule();
-                tiedRankedTeam.setRankedValue(rankValue, "Strength of Schedule");
-            }
-        }
-        Collections.sort(tiedRankedTeams);
-        removeAndStoreUnTiedRankedTeams(tiedRankedTeams, finalRankings);
-        ties = calculateTies(tiedRankedTeams);
-        if (ties == 0) {
-            return assembledList(finalRankings, tiedRankedTeams);
-        } else if (ties == 1) {
-            if (tiedRankedTeams.get(0).getTeam().compareTo(tiedRankedTeams.get(1).getTeam()) < 0) {
-                Collections.swap(tiedRankedTeams, 0, 1);
-            }
-        } else if (ties > 1) {
-            for (RankedTeam rankedTeam : tiedRankedTeams) {
-                rankedTeam.getTeam().setMessage(UNRESOLVED_TIE_MESSAGE);
-            }
-        }
-        return assembledList(finalRankings, tiedRankedTeams);
-    }
-
-    private void removeAndStoreUnTiedRankedTeams(List<RankedTeam> tiedRankedTeams, List<RankedTeam> finalRankings) {
+     private void removeAndStoreUnTiedRankedTeams(List<RankedTeam> tiedRankedTeams, List<RankedTeam> finalRankings) {
         while (topTeamFound(tiedRankedTeams)) {
             RankedTeam topTeam = tiedRankedTeams.get(0);
             setFirstAvailablePosition(finalRankings, topTeam);
@@ -163,6 +178,12 @@ public class Division extends ArrayList<Team> {
             RankedTeam bottomTeam = tiedRankedTeams.get(tiedRankedTeams.size()-1);
             setLastAvailablePosition(finalRankings, bottomTeam);
             tiedRankedTeams.remove(bottomTeam);
+        }
+    }
+
+    private void storeTeams(List<RankedTeam> rankedTeams, List<RankedTeam> rankedTeamsToStore) {
+        for (RankedTeam rankedTeamToStore : rankedTeamsToStore) {
+            setFirstAvailablePosition(rankedTeams, rankedTeamToStore);
         }
     }
 
@@ -182,19 +203,6 @@ public class Division extends ArrayList<Team> {
                 break;
             }
         }
-    }
-
-    private List<RankedTeam> assembledList(List<RankedTeam> rankedTeams, List<RankedTeam> teamsToInsert) {
-        int j = 0;
-        List<RankedTeam> assembledList = new ArrayList<>();
-        for (RankedTeam rankedTeam : rankedTeams) {
-            if (rankedTeam == null) {
-                assembledList.add(teamsToInsert.get(j++));
-            } else {
-                assembledList.add(rankedTeam);
-            }
-        }
-        return assembledList;
     }
 
     private boolean topTeamFound(List<RankedTeam> rankedTeams) {
@@ -229,20 +237,5 @@ public class Division extends ArrayList<Team> {
             rankedTeam.setRankedValue(rankedValue, "Win-Loss-Draw Percentage, Games in Common With Multiple Opponents");
 
         }
-    }
-
-    private int calculateTies(List<RankedTeam> rankedTeams) {
-        if (rankedTeams.size() < 2) {
-            return 0;
-        }
-        int ties = 0;
-        Double valueToTie = rankedTeams.get(0).getRankedValue();
-        String valueDescription = rankedTeams.get(0).getRankDescription();
-        for (int j = 1; j <rankedTeams.size(); j++) {
-            if (rankedTeams.get(j).getRankedValue().equals(valueToTie) && rankedTeams.get(j).getRankDescription().equals(valueDescription)) {
-                ties++;
-            }
-        }
-        return ties;
     }
 }
