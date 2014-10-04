@@ -23,14 +23,12 @@ public class RankedTeam implements Comparable {
         this.rankDescription = rankDescription;
     }
 
-
-    public String getRankDescription() {
-        return rankDescription;
-    }
-
     @Override
     public int compareTo(Object o) {
         RankedTeam other = (RankedTeam) o;
+        if (!rankDescription.equals(other.rankDescription)) {
+            throw new IllegalArgumentException("Can't compare two RankedTeams with different descriptions!");
+        }
         if (rankDescription.length() > 0) {
             getTeam().setMessage(rankDescription + ": " + rankedValue);
             other.getTeam().setMessage(other.rankDescription + ": " + other.rankedValue);
