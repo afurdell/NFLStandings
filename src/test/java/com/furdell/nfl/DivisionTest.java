@@ -332,6 +332,33 @@ public class DivisionTest {
     }
 
     @Test
+    public void twoTiedPairsOfTeamsAreSortedAsExpected() {
+        team1.recordWin(team2);
+        team2.recordLoss(team1);
+        team2.recordWin(team3);
+        team3.recordLoss(team2);
+        team3.recordWin(team4);
+        team4.recordLoss(team3);
+        team4.recordWin(team1);
+        team1.recordLoss(team4);
+
+        team1.recordWin(otherConferenceTeam);
+        team2.recordWin(otherConferenceTeam);
+        team3.recordWin(sameConferenceTeam);
+        team4.recordWin(sameConferenceTeam);
+
+        division.sort();
+        assertEquals(team3.getName(), division.get(0).getName());
+        assertEquals(team4.getName(), division.get(1).getName());
+        assertEquals(team1.getName(), division.get(2).getName());
+        assertEquals(team2.getName(), division.get(3).getName());
+        assertEquals("Head-To-Head Win-Loss-Draw Percentage Against " + team4.getName() + ": 1.0", team3.getMessage());
+        assertEquals("Head-To-Head Win-Loss-Draw Percentage Against " + team3.getName() + ": 0.0", team4.getMessage());
+        assertEquals("Head-To-Head Win-Loss-Draw Percentage Against " + team2.getName() + ": 1.0", team1.getMessage());
+        assertEquals("Head-To-Head Win-Loss-Draw Percentage Against " + team1.getName() + ": 0.0", team2.getMessage());
+    }
+
+    @Test
     public void multiWayTieBreakersContinueSequentiallyUntilLessThanThreeTeamsAreTied() {
         Team goodOtherConferenceTeam = new Team("goodOtherConferenceTeam", Conference.NFC, Region.NORTH);
         goodOtherConferenceTeam.recordWin(otherConferenceTeam);
