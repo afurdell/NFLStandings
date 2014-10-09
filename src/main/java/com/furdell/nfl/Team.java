@@ -23,7 +23,17 @@ public class Team implements Comparable {
         return name;
     }
 
-    public void recordWin(Team opponent) {
+    public void recordGame(Team opponent, int pointsScored, int pointsAllowed) {
+        if (pointsScored > pointsAllowed) {
+            recordWin(opponent);
+        } else if (pointsScored < pointsAllowed) {
+            recordLoss(opponent);
+        } else {
+            recordDraw(opponent);
+        }
+    }
+
+    private void recordWin(Team opponent) {
         totalWinRecord.recordWin();
         if (isSameConference(opponent)) {
             conferenceWinRecord.recordWin();
@@ -35,7 +45,7 @@ public class Team implements Comparable {
         winRecordsByTeam.get(opponent).recordWin();
     }
 
-    public void recordLoss(Team opponent) {
+    private void recordLoss(Team opponent) {
         totalWinRecord.recordLoss();
         if (isSameConference(opponent)) {
             conferenceWinRecord.recordLoss();
@@ -47,7 +57,7 @@ public class Team implements Comparable {
         winRecordsByTeam.get(opponent).recordLoss();
     }
 
-    public void recordDraw(Team opponent) {
+    private void recordDraw(Team opponent) {
         totalWinRecord.recordDraw();
         if (isSameConference(opponent)) {
             conferenceWinRecord.recordDraw();

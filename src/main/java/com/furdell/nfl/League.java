@@ -108,15 +108,7 @@ public class League {
     public void recordGame(String awayName, int awayScore, String homeName, int homeScore) {
         Team awayTeam = teams.get(awayName);
         Team homeTeam = teams.get(homeName);
-        if (awayScore > homeScore) {
-            awayTeam.recordWin(homeTeam);
-            homeTeam.recordLoss(awayTeam);
-        } else if (awayScore < homeScore) {
-            awayTeam.recordLoss(homeTeam);
-            homeTeam.recordWin(awayTeam);
-        } else {
-            awayTeam.recordDraw(homeTeam);
-            homeTeam.recordDraw(awayTeam);
-        }
+        awayTeam.recordGame(homeTeam, awayScore, homeScore);
+        homeTeam.recordGame(awayTeam, homeScore, awayScore);
     }
 }

@@ -11,8 +11,8 @@ public class TeamTest {
     public void teamsComparedByWinLossDrawPercentage() {
         Team team1 = new Team("team1", Conference.AFC, Region.EAST);
         Team team2 = new Team("team2",Conference.AFC, Region.EAST);
-        team1.recordWin(team2);
-        team2.recordLoss(team1);
+        team1.recordGame(team2, 3, 2);
+        team2.recordGame(team1, 2, 3);
         assertTrue(team1.winPercentage() > team2.winPercentage());
         assertEquals(-1, team2.compareTo(team1));
         assertTrue(team1.getMessage().isEmpty());
@@ -25,10 +25,10 @@ public class TeamTest {
         Team team1 = new Team("team1",Conference.AFC, Region.EAST);
         Team team2 = new Team("team2",Conference.AFC, Region.EAST);
         Team otherTeam = new Team("otherTeam",Conference.AFC, Region.EAST);
-        team1.recordLoss(otherTeam);
-        team1.recordWin(team2);
-        team2.recordLoss(team1);
-        team2.recordWin(otherTeam);
+        team1.recordGame(otherTeam, 2, 3);
+        team1.recordGame(team2, 3, 2);
+        team2.recordGame(team1, 2, 3);
+        team2.recordGame(otherTeam, 3, 2);
         assertEquals(team1.winPercentage(), team2.winPercentage());
         assertTrue(team1.winPercentage(team2) > team2.winPercentage(team1));
         assertEquals(-1, team2.compareTo(team1));
@@ -43,10 +43,10 @@ public class TeamTest {
         Team team2 = new Team("team2",Conference.AFC, Region.EAST);
         Team sameDivisionTeam = new Team("sameDivisionTeam",Conference.AFC, Region.EAST);
         Team otherDivisionTeam = new Team("otherDivisionTeam",Conference.NFC, Region.SOUTH);
-        team1.recordLoss(otherDivisionTeam);
-        team1.recordWin(sameDivisionTeam);
-        team2.recordLoss(otherDivisionTeam);
-        team2.recordWin(otherDivisionTeam);
+        team1.recordGame(otherDivisionTeam, 2, 3);
+        team1.recordGame(sameDivisionTeam, 3, 2);
+        team2.recordGame(otherDivisionTeam, 2, 3);
+        team2.recordGame(otherDivisionTeam, 3, 2);
         assertEquals(team1.winPercentage(), team2.winPercentage());
         assertEquals(team1.winPercentage(team2), team2.winPercentage(team1));
         assertTrue(team1.divisionalWinPercentage() > team2.divisionalWinPercentage());
@@ -63,10 +63,10 @@ public class TeamTest {
         Team otherTeam1 = new Team("otherTeam1",Conference.NFC, Region.WEST);
         Team otherTeam2 = new Team("otherTeam2",Conference.NFC, Region.WEST);
         Team otherTeam3 = new Team("otherTeam3",Conference.NFC, Region.WEST);
-        team1.recordWin(otherTeam1);
-        team1.recordLoss(otherTeam2);
-        team2.recordWin(otherTeam2);
-        team2.recordLoss(otherTeam3);
+        team1.recordGame(otherTeam1, 3, 2);
+        team1.recordGame(otherTeam2, 2, 3);
+        team2.recordGame(otherTeam2, 3, 2);
+        team2.recordGame(otherTeam3, 2, 3);
         assertEquals(team1.winPercentage(), team2.winPercentage());
         assertEquals(team1.winPercentage(team2), team2.winPercentage(team1));
         assertEquals(team1.divisionalWinPercentage(), team2.divisionalWinPercentage());
@@ -87,10 +87,10 @@ public class TeamTest {
         Team otherConferenceTeam2 = new Team("otherConferenceTeam2",Conference.NFC, Region.NORTH);
         Team otherConferenceTeam3 = new Team("otherConferenceTeam2",Conference.NFC, Region.SOUTH);
         Team sameConferenceTeam = new Team("sameConferenceTeam",Conference.AFC, Region.SOUTH);
-        team1.recordLoss(otherConferenceTeam1);
-        team1.recordWin(otherConferenceTeam2);
-        team2.recordLoss(otherConferenceTeam3);
-        team2.recordWin(sameConferenceTeam);
+        team1.recordGame(otherConferenceTeam1, 2, 3);
+        team1.recordGame(otherConferenceTeam2, 3, 2);
+        team2.recordGame(otherConferenceTeam3, 2, 3);
+        team2.recordGame(sameConferenceTeam, 3, 2);
         assertEquals(team1.winPercentage(), team2.winPercentage());
         assertEquals(team1.winPercentage(team2), team2.winPercentage(team1));
         assertEquals(team1.divisionalWinPercentage(), team2.divisionalWinPercentage());
@@ -109,13 +109,13 @@ public class TeamTest {
         Team goodTeam = new Team("goodTeam", Conference.NFC, Region.NORTH);
         Team badTeam = new Team("badTeam", Conference.NFC, Region.NORTH);
         for (int i = 0; i < 4; i++) {
-            goodTeam.recordWin(badTeam);
-            badTeam.recordLoss(goodTeam);
+            goodTeam.recordGame(badTeam, 3, 2);
+            badTeam.recordGame(goodTeam, 2, 3);
         }
-        team1.recordWin(goodTeam);
-        team1.recordLoss(badTeam);
-        team2.recordWin(badTeam);
-        team2.recordLoss(goodTeam);
+        team1.recordGame(goodTeam, 3, 2);
+        team1.recordGame(badTeam, 2, 3);
+        team2.recordGame(badTeam, 3, 2);
+        team2.recordGame(goodTeam, 2, 3);
         assertEquals(team1.winPercentage(), team2.winPercentage());
         assertEquals(team1.winPercentage(team2), team2.winPercentage(team1));
         assertEquals(team1.divisionalWinPercentage(), team2.divisionalWinPercentage());
@@ -135,11 +135,11 @@ public class TeamTest {
         Team goodTeam = new Team("goodTeam", Conference.NFC, Region.NORTH);
         Team badTeam = new Team("badTeam", Conference.NFC, Region.NORTH);
         for (int i = 0; i < 4; i++) {
-            goodTeam.recordWin(badTeam);
-            badTeam.recordLoss(goodTeam);
+            goodTeam.recordGame(badTeam, 3, 2);
+            badTeam.recordGame(goodTeam, 2, 3);
         }
-        team1.recordLoss(goodTeam);
-        team2.recordLoss(badTeam);
+        team1.recordGame(goodTeam, 2, 3);
+        team2.recordGame(badTeam, 2, 3);
         assertEquals(team1.winPercentage(), team2.winPercentage());
         assertEquals(team1.winPercentage(team2), team2.winPercentage(team1));
         assertEquals(team1.divisionalWinPercentage(), team2.divisionalWinPercentage());
@@ -156,8 +156,7 @@ public class TeamTest {
     public void drawsCountHalf() {
         Team team1 = new Team("team1",Conference.AFC, Region.EAST);
         Team team2 = new Team("team2",Conference.AFC, Region.EAST);
-        team1.recordDraw(team2);
+        team1.recordGame(team2, 3, 3);
         assertEquals(0.5, team1.winPercentage(), 0.1);
     }
-
 }

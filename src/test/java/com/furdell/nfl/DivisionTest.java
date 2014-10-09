@@ -69,16 +69,16 @@ public class DivisionTest {
     public void divisionSortsTeamsByWinLossDrawPercentage() {
         Team otherTeam = new Team("otherteam", Conference.AFC, Region.NORTH);
         for (int i = 0; i < 4; i++) {
-            team1.recordLoss(otherTeam);
-            team2.recordWin(otherTeam);
+            team1.recordGame(otherTeam, 2, 3);
+            team2.recordGame(otherTeam, 3, 2);
         }
         for (int i = 0; i < 2; i++) {
-            team3.recordWin(otherTeam);
-            team4.recordWin(otherTeam);
-            team4.recordLoss(otherTeam);
+            team3.recordGame(otherTeam, 3, 2);
+            team4.recordGame(otherTeam, 3, 2);
+            team4.recordGame(otherTeam, 2, 3);
         }
-        team3.recordLoss(otherTeam);
-        team3.recordDraw(otherTeam);
+        team3.recordGame(otherTeam, 2, 3);
+        team3.recordGame(otherTeam, 3, 3);
         division.sort();
         assertEquals(team2.getName(), division.get(0).getName());
         assertEquals(team3.getName(), division.get(1).getName());
@@ -93,25 +93,25 @@ public class DivisionTest {
     public void divisionSortsMultiWayTieResolvedByMultiWayHeadToHeadComparison() {
         Team otherTeam = new Team("otherteam", Conference.NFC, Region.WEST);
 
-        team1.recordWin(team4);
-        team1.recordWin(team4);
-        team1.recordLoss(team4);
-        team1.recordLoss(team2);
+        team1.recordGame(team4, 3, 2);
+        team1.recordGame(team4, 3, 2);
+        team1.recordGame(team4, 2, 3);
+        team1.recordGame(team2, 2, 3);
 
-        team2.recordWin(team1);
-        team2.recordWin(team4);
-        team2.recordLoss(team3);
-        team2.recordLoss(team3);
+        team2.recordGame(team1, 3, 2);
+        team2.recordGame(team4, 3, 2);
+        team2.recordGame(team3, 2, 3);
+        team2.recordGame(team3, 2, 3);
 
-        team3.recordWin(team2);
-        team3.recordWin(team2);
-        team3.recordLoss(otherTeam);
-        team3.recordLoss(otherTeam);
+        team3.recordGame(team2, 3, 2);
+        team3.recordGame(team2, 3, 2);
+        team3.recordGame(otherTeam, 2, 3);
+        team3.recordGame(otherTeam, 2, 3);
 
-        team4.recordWin(team1);
-        team4.recordLoss(team1);
-        team4.recordLoss(team1);
-        team4.recordLoss(team2);
+        team4.recordGame(team1, 3, 2);
+        team4.recordGame(team1, 2, 3);
+        team4.recordGame(team1, 2, 3);
+        team4.recordGame(team2, 2, 3);
 
         division.sort();
         assertEquals(team3.getName(), division.get(0).getName());
@@ -126,25 +126,25 @@ public class DivisionTest {
 
     @Test
     public void divisionSortsMultiWayTieResolvedSecondByMultiWayDivisionComparison() {
-        team1.recordWin(otherConferenceTeam);
-        team1.recordWin(otherConferenceTeam);
-        team1.recordWin(otherConferenceTeam);
-        team1.recordLoss(otherConferenceTeam);
+        team1.recordGame(otherConferenceTeam, 3, 2);
+        team1.recordGame(otherConferenceTeam, 3, 2);
+        team1.recordGame(otherConferenceTeam, 3, 2);
+        team1.recordGame(otherConferenceTeam, 2, 3);
 
-        team2.recordWin(team4);
-        team2.recordWin(team4);
-        team2.recordWin(otherConferenceTeam);
-        team2.recordLoss(team4);
+        team2.recordGame(team4, 3, 2);
+        team2.recordGame(team4, 3, 2);
+        team2.recordGame(otherConferenceTeam, 3, 2);
+        team2.recordGame(team4, 2, 3);
 
-        team3.recordWin(team4);
-        team3.recordWin(otherConferenceTeam);
-        team3.recordWin(otherConferenceTeam);
-        team3.recordLoss(otherConferenceTeam);
+        team3.recordGame(team4, 3, 2);
+        team3.recordGame(otherConferenceTeam, 3, 2);
+        team3.recordGame(otherConferenceTeam, 3, 2);
+        team3.recordGame(otherConferenceTeam, 2, 3);
 
-        team4.recordWin(team2);
-        team4.recordLoss(team2);
-        team4.recordLoss(team2);
-        team4.recordLoss(team3);
+        team4.recordGame(team2, 3, 2);
+        team4.recordGame(team2, 2, 3);
+        team4.recordGame(team2, 2, 3);
+        team4.recordGame(team3, 2, 3);
 
         division.sort();
         assertEquals(team3.getName(), division.get(0).getName());
@@ -166,26 +166,26 @@ public class DivisionTest {
         Team commonTeam = new Team("commonTeam", Conference.NFC, Region.NORTH);
 
         for (int i = 0; i < 4; i++) {
-            team4.recordWin(commonTeam);
-            team4.recordLoss(otherTeam4);
+            team4.recordGame(commonTeam, 3, 2);
+            team4.recordGame(otherTeam4, 2, 3);
         }
 
         for (int i = 0; i < 3; i++) {
-            team2.recordWin(commonTeam);
-            team2.recordLoss(otherTeam2);
-            team3.recordLoss(commonTeam);
-            team3.recordWin(otherTeam3);
+            team2.recordGame(commonTeam, 3, 2);
+            team2.recordGame(otherTeam2, 2, 3);
+            team3.recordGame(commonTeam, 2, 3);
+            team3.recordGame(otherTeam3, 3, 2);
         }
-        team2.recordWin(otherTeam2);
-        team2.recordLoss(commonTeam);
-        team3.recordLoss(otherTeam3);
-        team3.recordWin(commonTeam);
+        team2.recordGame(otherTeam2, 3, 2);
+        team2.recordGame(commonTeam, 2, 3);
+        team3.recordGame(otherTeam3, 2, 3);
+        team3.recordGame(commonTeam, 3, 2);
 
         for (int i = 0; i < 2; i++) {
-            team1.recordWin(commonTeam);
-            team1.recordLoss(commonTeam);
-            team1.recordWin(otherTeam1);
-            team1.recordLoss(otherTeam1);
+            team1.recordGame(commonTeam, 3, 2);
+            team1.recordGame(commonTeam, 2, 3);
+            team1.recordGame(otherTeam1, 3, 2);
+            team1.recordGame(otherTeam1, 2, 3);
         }
 
         division.sort();
@@ -201,25 +201,25 @@ public class DivisionTest {
 
     @Test
     public void divisionSortsMultiWayTieResolvedFourthByMultiWayConferenceComparison() {
-        team1.recordWin(sameConferenceTeam);
-        team1.recordWin(sameConferenceTeam);
-        team1.recordLoss(sameConferenceTeam);
-        team1.recordLoss(otherConferenceTeam);
+        team1.recordGame(sameConferenceTeam, 3, 2);
+        team1.recordGame(sameConferenceTeam, 3, 2);
+        team1.recordGame(sameConferenceTeam, 2, 3);
+        team1.recordGame(otherConferenceTeam, 2, 3);
 
-        team2.recordWin(otherConferenceTeam);
-        team2.recordWin(otherConferenceTeam);
-        team2.recordLoss(otherConferenceTeam);
-        team2.recordLoss(sameConferenceTeam);
+        team2.recordGame(otherConferenceTeam, 3, 2);
+        team2.recordGame(otherConferenceTeam, 3, 2);
+        team2.recordGame(otherConferenceTeam, 2, 3);
+        team2.recordGame(sameConferenceTeam, 2, 3);
 
-        team3.recordWin(sameConferenceTeam);
-        team3.recordWin(sameConferenceTeam);
-        team3.recordLoss(otherConferenceTeam);
-        team3.recordLoss(otherConferenceTeam);
+        team3.recordGame(sameConferenceTeam, 3, 2);
+        team3.recordGame(sameConferenceTeam, 3, 2);
+        team3.recordGame(otherConferenceTeam, 2, 3);
+        team3.recordGame(otherConferenceTeam, 2, 3);
 
-        team4.recordWin(sameConferenceTeam);
-        team4.recordWin(otherConferenceTeam);
-        team4.recordLoss(sameConferenceTeam);
-        team4.recordLoss(sameConferenceTeam);
+        team4.recordGame(sameConferenceTeam, 3, 2);
+        team4.recordGame(otherConferenceTeam, 3, 2);
+        team4.recordGame(sameConferenceTeam, 2, 3);
+        team4.recordGame(sameConferenceTeam, 2, 3);
 
         division.sort();
         assertEquals(team3.getName(), division.get(0).getName());
@@ -241,28 +241,28 @@ public class DivisionTest {
         Team badTeam2 = new Team("badTeam2", Conference.NFC, Region.NORTH);
         Team badTeam3 = new Team("badTeam3", Conference.NFC, Region.NORTH);
 
-        goodTeam1.recordWin(badTeam1);
-        goodTeam2.recordWin(badTeam2);
-        goodTeam3.recordWin(badTeam3);
-        badTeam1.recordLoss(goodTeam1);
-        badTeam2.recordLoss(badTeam2);
-        badTeam3.recordLoss(badTeam3);
+        goodTeam1.recordGame(badTeam1, 3, 2);
+        goodTeam2.recordGame(badTeam2, 3, 2);
+        goodTeam3.recordGame(badTeam3, 3, 2);
+        badTeam1.recordGame(goodTeam1, 2, 3);
+        badTeam2.recordGame(badTeam2, 2, 3);
+        badTeam3.recordGame(badTeam3, 2, 3);
 
-        team1.recordWin(goodTeam1);
-        team1.recordWin(goodTeam1);
-        team1.recordLoss(goodTeam1);
+        team1.recordGame(goodTeam1, 3, 2);
+        team1.recordGame(goodTeam1, 3, 2);
+        team1.recordGame(goodTeam1, 2, 3);
 
-        team2.recordWin(badTeam2);
-        team2.recordWin(badTeam2);
-        team2.recordLoss(goodTeam2);
+        team2.recordGame(badTeam2, 3, 2);
+        team2.recordGame(badTeam2, 3, 2);
+        team2.recordGame(goodTeam2, 2, 3);
 
-        team3.recordWin(goodTeam3);
-        team3.recordWin(badTeam3);
-        team3.recordLoss(goodTeam3);
+        team3.recordGame(goodTeam3, 3, 2);
+        team3.recordGame(badTeam3, 3, 2);
+        team3.recordGame(goodTeam3, 2, 3);
 
-        team4.recordWin(team1);
-        team4.recordWin(team2);
-        team4.recordLoss(team3);
+        team4.recordGame(team1, 3, 2);
+        team4.recordGame(team2, 3, 2);
+        team4.recordGame(team3, 2, 3);
 
         division.sort();
         assertEquals(team4.getName(), division.get(0).getName());
@@ -282,26 +282,26 @@ public class DivisionTest {
         Team thirdBestTeam = new Team("thirdBestTeam", Conference.NFC, Region.WEST);
         Team worstTeam = new Team("worstTeam", Conference.NFC, Region.WEST);
 
-        bestTeam.recordWin(secondBestTeam);
-        bestTeam.recordWin(thirdBestTeam);
-        bestTeam.recordWin(worstTeam);
+        bestTeam.recordGame(secondBestTeam, 3, 2);
+        bestTeam.recordGame(thirdBestTeam, 3, 2);
+        bestTeam.recordGame(worstTeam, 3, 2);
 
-        secondBestTeam.recordWin(thirdBestTeam);
-        secondBestTeam.recordWin(worstTeam);
-        secondBestTeam.recordLoss(bestTeam);
+        secondBestTeam.recordGame(thirdBestTeam, 3, 2);
+        secondBestTeam.recordGame(worstTeam, 3, 2);
+        secondBestTeam.recordGame(bestTeam, 2, 3);
 
-        thirdBestTeam.recordWin(worstTeam);
-        thirdBestTeam.recordLoss(bestTeam);
-        thirdBestTeam.recordLoss(secondBestTeam);
+        thirdBestTeam.recordGame(worstTeam, 3, 2);
+        thirdBestTeam.recordGame(bestTeam, 2, 3);
+        thirdBestTeam.recordGame(secondBestTeam, 2, 3);
 
-        worstTeam.recordLoss(bestTeam);
-        worstTeam.recordLoss(secondBestTeam);
-        worstTeam.recordLoss(thirdBestTeam);
+        worstTeam.recordGame(bestTeam, 2, 3);
+        worstTeam.recordGame(secondBestTeam, 2, 3);
+        worstTeam.recordGame(thirdBestTeam, 2, 3);
 
-        team1.recordLoss(worstTeam);
-        team2.recordLoss(thirdBestTeam);
-        team3.recordLoss(secondBestTeam);
-        team4.recordLoss(bestTeam);
+        team1.recordGame(worstTeam, 2, 3);
+        team2.recordGame(thirdBestTeam, 2, 3);
+        team3.recordGame(secondBestTeam, 2, 3);
+        team4.recordGame(bestTeam, 2, 3);
 
         division.sort();
         assertEquals(team4.getName(), division.get(0).getName());
@@ -316,14 +316,14 @@ public class DivisionTest {
 
     @Test
     public void onceUnbrokenMultiwayTieIsEstablishedNoFurtherSortingIsAttempted() {
-        team1.recordWin(team2);
-        team2.recordLoss(team1);
-        team2.recordWin(team3);
-        team3.recordLoss(team2);
-        team3.recordWin(team4);
-        team4.recordLoss(team3);
-        team4.recordWin(team1);
-        team1.recordLoss(team4);
+        team1.recordGame(team2, 3, 2);
+        team2.recordGame(team1, 2, 3);
+        team2.recordGame(team3, 3, 2);
+        team3.recordGame(team2, 2, 3);
+        team3.recordGame(team4, 3, 2);
+        team4.recordGame(team3, 2, 3);
+        team4.recordGame(team1, 3, 2);
+        team1.recordGame(team4, 2, 3);
 
         division.sort();
         for (Team team : division) {
@@ -333,19 +333,19 @@ public class DivisionTest {
 
     @Test
     public void twoTiedPairsOfTeamsAreSortedAsExpected() {
-        team1.recordWin(team2);
-        team2.recordLoss(team1);
-        team2.recordWin(team3);
-        team3.recordLoss(team2);
-        team3.recordWin(team4);
-        team4.recordLoss(team3);
-        team4.recordWin(team1);
-        team1.recordLoss(team4);
+        team1.recordGame(team2, 3, 2);
+        team2.recordGame(team1, 2, 3);
+        team2.recordGame(team3, 3, 2);
+        team3.recordGame(team2, 2, 3);
+        team3.recordGame(team4, 3, 2);
+        team4.recordGame(team3, 2, 3);
+        team4.recordGame(team1, 3, 2);
+        team1.recordGame(team4, 2, 3);
 
-        team1.recordWin(otherConferenceTeam);
-        team2.recordWin(otherConferenceTeam);
-        team3.recordWin(sameConferenceTeam);
-        team4.recordWin(sameConferenceTeam);
+        team1.recordGame(otherConferenceTeam, 3, 2);
+        team2.recordGame(otherConferenceTeam, 3, 2);
+        team3.recordGame(sameConferenceTeam, 3, 2);
+        team4.recordGame(sameConferenceTeam, 3, 2);
 
         division.sort();
         assertEquals(team3.getName(), division.get(0).getName());
@@ -361,22 +361,22 @@ public class DivisionTest {
     @Test
     public void multiWayTieBreakersContinueSequentiallyUntilLessThanThreeTeamsAreTied() {
         Team goodOtherConferenceTeam = new Team("goodOtherConferenceTeam", Conference.NFC, Region.NORTH);
-        goodOtherConferenceTeam.recordWin(otherConferenceTeam);
-        otherConferenceTeam.recordLoss(goodOtherConferenceTeam);
+        goodOtherConferenceTeam.recordGame(otherConferenceTeam, 3, 2);
+        otherConferenceTeam.recordGame(goodOtherConferenceTeam, 2, 3);
 
-        team1.recordWin(team2);
-        team2.recordLoss(team1);
-        team2.recordWin(team3);
-        team3.recordLoss(team2);
-        team3.recordWin(team4);
-        team4.recordLoss(team3);
-        team4.recordWin(team1);
-        team1.recordLoss(team4);
+        team1.recordGame(team2, 3, 2);
+        team2.recordGame(team1, 2, 3);
+        team2.recordGame(team3, 3, 2);
+        team3.recordGame(team2, 2, 3);
+        team3.recordGame(team4, 3, 2);
+        team4.recordGame(team3, 2, 3);
+        team4.recordGame(team1, 3, 2);
+        team1.recordGame(team4, 2, 3);
 
-        team4.recordWin(sameConferenceTeam);
-        team1.recordWin(goodOtherConferenceTeam);
-        team2.recordWin(otherConferenceTeam);
-        team3.recordWin(otherConferenceTeam);
+        team4.recordGame(sameConferenceTeam, 3, 2);
+        team1.recordGame(goodOtherConferenceTeam, 3, 2);
+        team2.recordGame(otherConferenceTeam, 3, 2);
+        team3.recordGame(otherConferenceTeam, 3, 2);
 
         division.sort();
 
